@@ -13,58 +13,139 @@ export default function ParticleBackground() {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetRotationX = 0;
+    let targetRotationY = 0;
+    let rotationX = 0;
+    let rotationY = 0;
+
     const handleResize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
     };
 
-    window.addEventListener('resize', handleResize);
+    const handleMouseMove = (e) => {
+      mouseX = (e.clientX - width / 2) / (width / 2);
+      mouseY = (e.clientY - height / 2) / (height / 2);
+      targetRotationY = mouseX * 0.4;
+      targetRotationX = -mouseY * 0.4;
+    };
 
-    const particles = Array.from({ length: 45 }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      radius: Math.random() * 2 + 1,
-      alpha: Math.random() * 0.5 + 0.2
-    }));
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('mousemove', handleMouseMove);
+
+    // 3D Particle Constants (Warm Red, Crimson & Amber Embers)
+    const FOV = 400;
+    const NUM_PARTICLES = 90;
+    const COLORS = ['#ef4444', '#f43f5e', '#fb7185', '#f59e0b', '#dc2626', '#fda4af'];
+
+    // Generate 3D Particles in a sphere/cube field
+    const particles = Array.from({ length: NUM_PARTICLES }, () => {
+      const radius = Math.random() * 450 + 50;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(Math.random() * 2 - 1);
+      return {
+        x: radius * Math.sin(phi) * Math.cos(theta),
+        y: radius * Math.sin(phi) * Math.sin(theta),
+        z: radius * Math.cos(phi),
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        vz: (Math.random() - 0.5) * 0.6,
+        baseRadius: Math.random() * 2.5 + 1.2,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        alpha: Math.random() * 0.6 + 0.3
+      };
+    });
 
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Draw particle connections
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
+      // Smooth rotation dampening towards mouse target
+      rotationX += (targetRotationX - rotationX) * 0.05;
+      rotationY += (targetRotationY - rotationY) * 0.05;
+
+      const cosX = Math.cos(rotationX);
+      const sinX = Math.sin(rotationX);
+      const cosY = Math.cos(rotationY);
+      const sinY = Math.sin(rotationY);
+
+      // Projected 3D point list for constellation rendering
+      const projectedPoints = [];
+
+      // Update and calculate 3D projection for each particle
+      particles.forEach((p) => {
+        // Move in 3D space
+        p.x += p.vx;
+        p.y += p.vy;
+        p.z += p.vz;
+
+        // Boundary bounce in 3D cube
+        if (Math.abs(p.x) > 550) p.vx *= -1;
+        if (Math.abs(p.y) > 550) p.vy *= -1;
+        if (Math.abs(p.z) > 550) p.vz *= -1;
+
+        // Apply 3D Y-rotation
+        let x1 = p.x * cosY - p.z * sinY;
+        let z1 = p.z * cosY + p.x * sinY;
+
+        // Apply 3D X-rotation
+        let y1 = p.y * cosX - z1 * sinX;
+        let z2 = z1 * cosX + p.y * sinX;
+
+        // 3D Perspective Projection
+        const scale = FOV / (FOV + z2 + 500);
+        const projX = width / 2 + x1 * scale;
+        const projY = height / 2 + y1 * scale;
+        const projRadius = Math.max(0.5, p.baseRadius * scale);
+
+        projectedPoints.push({
+          projX,
+          projY,
+          scale,
+          z: z2,
+          color: p.color,
+          alpha: Math.min(1, p.alpha * scale)
+        });
+      });
+
+      // Sort projected points by depth (Z-index back to front rendering)
+      projectedPoints.sort((a, b) => b.z - a.z);
+
+      // Draw 3D Constellation Connections
+      for (let i = 0; i < projectedPoints.length; i++) {
+        for (let j = i + 1; j < projectedPoints.length; j++) {
+          const p1 = projectedPoints[i];
+          const p2 = projectedPoints[j];
+
+          const dx = p1.projX - p2.projX;
+          const dy = p1.projY - p2.projY;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 130) {
+          if (dist < 120 && p1.scale > 0.4 && p2.scale > 0.4) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(59, 130, 246, ${0.15 * (1 - dist / 130)})`;
-            ctx.lineWidth = 0.8;
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(59, 130, 246, ${0.2 * (1 - dist / 120) * p1.scale})`;
+            ctx.lineWidth = 0.8 * p1.scale;
+            ctx.moveTo(p1.projX, p1.projY);
+            ctx.lineTo(p2.projX, p2.projY);
             ctx.stroke();
           }
         }
       }
 
-      // Draw & update particles
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < 0 || p.x > width) p.vx *= -1;
-        if (p.y < 0 || p.y > height) p.vy *= -1;
+      // Render 3D Glowing Particle Spheres
+      projectedPoints.forEach((p) => {
+        if (p.projX < -50 || p.projX > width + 50 || p.projY < -50 || p.projY > height + 50) return;
 
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(59, 130, 246, ${p.alpha})`;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = '#3B82F6';
+        ctx.arc(p.projX, p.projY, p.projRadius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowBlur = 12 * p.scale;
+        ctx.shadowColor = p.color;
         ctx.fill();
         ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
       });
 
       animationFrameId = requestAnimationFrame(render);
@@ -74,6 +155,7 @@ export default function ParticleBackground() {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -81,7 +163,7 @@ export default function ParticleBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 opacity-70"
+      className="fixed inset-0 pointer-events-none z-0 opacity-80"
     />
   );
 }

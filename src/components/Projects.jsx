@@ -1,147 +1,195 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FolderKanban, ExternalLink } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ExternalLink, Sparkles, FolderKanban, ArrowRight, Eye, Code2, Cpu } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa6';
 import { projects } from '../data/portfolioData';
-
-const categories = ['All', 'Full Stack', 'Enterprise', 'MERN Stack'];
+import ProjectModal from './ProjectModal';
 
 export default function Projects() {
-  const [activeTab, setActiveTab] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [activeProject, setActiveProject] = useState(null);
 
-  const filteredProjects = activeTab === 'All'
+  const categories = ['All', 'Generative AI', 'Full Stack', 'Machine Learning', 'Enterprise Web'];
+
+  const filteredProjects = selectedCategory === 'All'
     ? projects
-    : projects.filter(p => p.category === activeTab);
+    : projects.filter(p => p.category === selectedCategory || (selectedCategory === 'Enterprise Web' && p.category === 'Enterprise'));
 
   return (
-    <section id="projects" className="py-24 relative z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center space-y-3 mb-12"
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-pill text-xs font-semibold text-blue-600 dark:text-blue-400 tracking-wide uppercase">
-            <FolderKanban className="w-3.5 h-3.5" />
-            <span>Featured Portfolio</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-            Recent <span className="gradient-text">Projects</span>
-          </h2>
-          <div className="w-16 h-1 bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-500 dark:to-cyan-400 mx-auto rounded-full" />
-        </motion.div>
+    <section id="projects" className="py-24 relative overflow-hidden bg-slate-950">
+      {/* Background Accent Mesh (Red Theme) */}
+      <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-rose-500/10 rounded-full blur-[140px] pointer-events-none" />
 
-        {/* Filter Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {categories.map((tab) => {
-            const isActive = activeTab === tab;
-            return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Section Title */}
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill text-xs font-semibold text-red-300 border border-red-500/30"
+          >
+            <FolderKanban className="w-4 h-4 text-red-400" />
+            <span>Featured Case Studies & Software Work</span>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-heading"
+          >
+            Real-World <span className="gradient-text">Engineering Projects</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-base sm:text-lg text-slate-300"
+          >
+            Generative AI & RAG systems, Full Stack web applications, and Machine Learning microservices.
+          </motion.p>
+        </div>
+
+        {/* Category Filters */}
+        <div className="flex justify-center mb-12">
+          <div className="glass-panel p-1.5 rounded-2xl border border-red-500/20 flex flex-wrap gap-2 bg-slate-900/80">
+            {categories.map((cat) => (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`relative px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  isActive
-                    ? 'text-white shadow-lg shadow-blue-500/20'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 glass-panel border border-slate-200 dark:border-slate-800'
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 ${
+                  selectedCategory === cat
+                    ? 'bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-lg shadow-red-600/30 border border-red-400/40'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
                 }`}
               >
-                {isActive && (
-                  <motion.span
-                    layoutId="activeFilterTab"
-                    className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full -z-10"
-                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                  />
-                )}
-                {tab}
+                {cat}
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
 
         {/* Projects Grid */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence>
-            {filteredProjects.map((project) => (
-              <motion.div
-                key={project.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4 }}
-                className="glass-panel rounded-3xl border border-slate-200 dark:border-slate-800 hover:border-blue-500/30 dark:hover:border-blue-500/40 transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-2 shadow-lg"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {filteredProjects.map((project, idx) => (
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1 }}
+              className="cyber-card rounded-3xl overflow-hidden flex flex-col justify-between group border border-red-500/20 hover:border-red-500/40"
+            >
+              {/* Project Image Container with Overlay & Animations */}
+              <div
+                onClick={() => setActiveProject(project)}
+                className="relative h-56 sm:h-64 overflow-hidden cursor-pointer group/img"
               >
-                <div className="p-6 sm:p-8 space-y-5">
-                  {/* Category Pill & Top Icons */}
-                  <div className="flex items-center justify-between">
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/5 dark:bg-blue-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
-                      {project.category}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <a
-                        href={project.githubLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="p-2 rounded-full glass-panel text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border border-slate-200 dark:border-slate-800 hover:border-blue-500/30 dark:hover:border-blue-500/40 transition-colors"
-                        aria-label="View Code on GitHub"
-                      >
-                        <FaGithub className="w-4 h-4" />
-                      </a>
-                      <a
-                        href={project.liveLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="p-2 rounded-full glass-panel text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border border-slate-200 dark:border-slate-800 hover:border-blue-500/30 dark:hover:border-blue-500/40 transition-colors"
-                        aria-label="View Live Demo"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    </div>
-                  </div>
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-700 ease-out"
+                />
+                
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-85 group-hover/img:opacity-65 transition-opacity duration-300" />
 
-                  {/* Title & Description */}
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {project.title}
-                    </h3>
-                    <p className="text-slate-600 dark:text-slate-300 text-sm mt-2 leading-relaxed">
-                      {project.description}
-                    </p>
-                  </div>
-
-                  {/* Feature Highlights */}
-                  <div className="space-y-1.5 pt-2">
-                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Key Features:</span>
-                    {project.features.map((feat, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
-                        <span>{feat}</span>
-                      </div>
-                    ))}
-                  </div>
+                {/* Floating category badge */}
+                <div className="absolute top-4 left-4 z-10">
+                  <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-slate-950/90 backdrop-blur-md text-red-300 border border-red-500/40 shadow-lg flex items-center gap-1.5 font-heading">
+                    {project.category === 'Generative AI' && <Sparkles className="w-3.5 h-3.5 text-amber-400" />}
+                    <span>{project.category}</span>
+                  </span>
                 </div>
 
-                {/* Footer Badges */}
-                <div className="px-6 py-4 bg-slate-50/50 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between">
+                {/* Hover Quick Action Button */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 z-20 bg-slate-950/50 backdrop-blur-[2px]">
+                  <span className="px-5 py-2.5 rounded-full bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs flex items-center gap-2 shadow-xl shadow-red-600/40 transform scale-90 group-hover/img:scale-100 transition-transform duration-300 border border-red-400/40">
+                    <Eye className="w-4 h-4" /> Preview Case Details
+                  </span>
+                </div>
+              </div>
+
+              {/* Card Body */}
+              <div className="p-6 sm:p-8 space-y-4 flex-1 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3
+                      onClick={() => setActiveProject(project)}
+                      className="text-xl sm:text-2xl font-extrabold text-white group-hover:text-red-400 transition-colors cursor-pointer font-heading"
+                    >
+                      {project.title}
+                    </h3>
+                  </div>
+
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    {project.description}
+                  </p>
+
+                  {/* Metrics Badge */}
+                  {project.metrics && (
+                    <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 space-y-1.5">
+                      {project.metrics.map((m, mIdx) => (
+                        <div key={mIdx} className="flex items-center gap-2">
+                          <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>{m}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-4 pt-4 border-t border-slate-800/80">
+                  {/* Tech tags */}
                   <div className="flex flex-wrap gap-1.5">
-                    {project.technologies.map((t, idx) => (
-                      <span key={idx} className="text-[11px] font-medium text-slate-600 dark:text-slate-400 bg-slate-200/50 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200/80 dark:border-slate-700/60">
-                        {t}
+                    {project.technologies.map((tech, tIdx) => (
+                      <span
+                        key={tIdx}
+                        className="px-2.5 py-1 rounded-lg text-xs font-mono font-medium bg-slate-900 text-slate-300 border border-slate-800"
+                      >
+                        {tech}
                       </span>
                     ))}
                   </div>
-                </div>
 
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+                  <div className="flex items-center justify-between pt-2">
+                    <a
+                      href={project.liveLink || project.githubLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-red-400 transition-colors"
+                    >
+                      <FaGithub className="w-4 h-4" />
+                      <span>Code on GitHub</span>
+                    </a>
+
+                    <button
+                      onClick={() => setActiveProject(project)}
+                      className="px-5 py-2.5 rounded-full text-xs font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-md shadow-red-600/30 hover:scale-105 transition-all flex items-center gap-1.5 border border-red-400/30 font-heading"
+                    >
+                      <span>View Case</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
       </div>
+
+      {/* Project Detail Popup Modal */}
+      <ProjectModal
+        project={activeProject}
+        onClose={() => setActiveProject(null)}
+      />
     </section>
   );
 }

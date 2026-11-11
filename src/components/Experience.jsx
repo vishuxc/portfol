@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Briefcase, Calendar, MapPin, Trophy } from 'lucide-react';
+import { Briefcase, Calendar, MapPin, Trophy, CheckCircle2 } from 'lucide-react';
 import { experiences } from '../data/portfolioData';
 
 export default function Experience() {
   return (
-    <section id="experience" className="py-24 relative z-10">
+    <section id="experience" className="py-24 relative z-10 bg-slate-950 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -16,20 +16,20 @@ export default function Experience() {
           transition={{ duration: 0.6 }}
           className="text-center space-y-3 mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-pill text-xs font-semibold text-blue-600 dark:text-blue-400 tracking-wide uppercase">
-            <Briefcase className="w-3.5 h-3.5" />
-            <span>Career History</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill text-xs font-bold text-red-300 border border-red-500/30">
+            <Briefcase className="w-4 h-4 text-red-400" />
+            <span>Career History & Roles</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-heading">
             Work <span className="gradient-text">Experience</span>
           </h2>
-          <div className="w-16 h-1 bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-500 dark:to-cyan-400 mx-auto rounded-full" />
+          <div className="w-20 h-1 bg-gradient-to-r from-red-500 via-rose-500 to-amber-400 mx-auto rounded-full" />
         </motion.div>
 
         {/* Timeline Container */}
         <div className="relative max-w-4xl mx-auto">
           {/* Vertical Connecting Line */}
-          <div className="absolute left-4 sm:left-1/2 top-4 bottom-4 w-0.5 bg-gradient-to-b from-blue-500 via-cyan-500 to-indigo-600 -translate-x-1/2 hidden sm:block opacity-30" />
+          <div className="absolute left-4 sm:left-1/2 top-4 bottom-4 w-0.5 bg-gradient-to-b from-red-500 via-rose-500 to-amber-500 -translate-x-1/2 hidden sm:block opacity-40" />
 
           <div className="space-y-12">
             {experiences.map((exp, idx) => {
@@ -46,35 +46,35 @@ export default function Experience() {
                   }`}
                 >
                   {/* Timeline Central Dot */}
-                  <div className="absolute left-4 sm:left-1/2 top-6 -translate-x-1/2 w-5 h-5 rounded-full bg-white dark:bg-slate-900 border-2 border-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.4)] z-20 hidden sm:block">
-                    <div className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400 m-auto mt-0.5 animate-pulse" />
+                  <div className="absolute left-4 sm:left-1/2 top-6 -translate-x-1/2 w-5 h-5 rounded-full bg-slate-950 border-2 border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.6)] z-20 hidden sm:block">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-500 m-auto mt-0.5 animate-pulse" />
                   </div>
 
                   {/* Card Content */}
                   <div className="w-full sm:w-1/2 sm:px-8">
-                    <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 hover:border-blue-500/30 dark:hover:border-blue-500/40 transition-all duration-300 shadow-lg group hover:-translate-y-1">
+                    <div className="cyber-card p-6 sm:p-8 rounded-3xl border border-red-500/25 bg-slate-900/90 shadow-2xl group">
                       
                       {/* Role & Company Header */}
-                      <div className="flex flex-wrap items-start justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-4 mb-4">
+                      <div className="flex flex-wrap items-start justify-between gap-2 border-b border-slate-800 pb-4 mb-4">
                         <div>
-                          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/5 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                            {exp.type}
+                          <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                            {exp.type || exp.status}
                           </span>
-                          <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          <h3 className="text-xl font-extrabold text-white mt-2 group-hover:text-red-300 transition-colors font-heading">
                             {exp.role}
                           </h3>
-                          <h4 className="text-base font-semibold text-cyan-600 dark:text-cyan-400">
+                          <h4 className="text-base font-semibold text-red-400 mt-0.5">
                             {exp.company}
                           </h4>
                         </div>
 
-                        <div className="text-xs text-slate-500 dark:text-slate-400 space-y-1 text-left">
-                          <div className="flex items-center justify-end gap-1">
-                            <Calendar className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
+                        <div className="text-xs text-slate-300 space-y-1 text-left font-medium">
+                          <div className="flex items-center justify-end gap-1.5 text-red-300">
+                            <Calendar className="w-3.5 h-3.5" />
                             <span>{exp.period}</span>
                           </div>
-                          <div className="flex items-center justify-end gap-1">
-                            <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                          <div className="flex items-center justify-end gap-1.5 text-slate-400">
+                            <MapPin className="w-3.5 h-3.5" />
                             <span>{exp.location}</span>
                           </div>
                         </div>
@@ -83,8 +83,8 @@ export default function Experience() {
                       {/* Responsibilities list */}
                       <ul className="space-y-2 mb-4">
                         {exp.responsibilities.map((resp, rIdx) => (
-                          <li key={rIdx} className="flex items-start gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 mt-1.5 flex-shrink-0" />
+                          <li key={rIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
+                            <CheckCircle2 className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
                             <span>{resp}</span>
                           </li>
                         ))}
@@ -92,21 +92,21 @@ export default function Experience() {
 
                       {/* Key Achievement */}
                       {exp.achievements && exp.achievements.length > 0 && (
-                        <div className="mt-4 p-3 rounded-2xl bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/10 dark:border-blue-500/20 flex items-start gap-2 text-xs font-medium text-blue-700 dark:text-blue-300">
-                          <Trophy className="w-4 h-4 text-amber-500 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                        <div className="mt-4 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2 text-xs font-medium text-amber-300">
+                          <Trophy className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
                           <div>
-                            <span className="font-bold text-amber-600 dark:text-amber-300">Achievement: </span>
+                            <span className="font-extrabold text-amber-300">Key Impact: </span>
                             {exp.achievements.join(' ')}
                           </div>
                         </div>
                       )}
 
                       {/* Tech Badges */}
-                      <div className="flex flex-wrap gap-1.5 mt-5 pt-4 border-t border-slate-200 dark:border-slate-800/80">
+                      <div className="flex flex-wrap gap-1.5 mt-5 pt-4 border-t border-slate-800">
                         {exp.technologies.map((tech, tIdx) => (
                           <span
                             key={tIdx}
-                            className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60"
+                            className="px-2.5 py-1 rounded-lg text-xs font-mono font-medium bg-slate-950 text-slate-300 border border-slate-800"
                           >
                             {tech}
                           </span>

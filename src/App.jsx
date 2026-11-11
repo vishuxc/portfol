@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import Experience from './components/Experience';
 import Projects from './components/Projects';
+import ResumeSection from './components/ResumeSection';
+import ResumeModal from './components/ResumeModal';
 import Skills from './components/Skills';
 import Certifications from './components/Certifications';
 import Education from './components/Education';
@@ -15,22 +17,25 @@ import ScrollProgress from './components/ScrollProgress';
 import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
+
   return (
-    <div className="relative min-h-screen bg-[#0F172A] text-slate-100 overflow-x-hidden selection:bg-blue-500 selection:text-white">
+    <div className="relative min-h-screen bg-slate-50 dark:bg-[#0F172A] text-slate-900 dark:text-slate-100 overflow-x-hidden selection:bg-blue-500 selection:text-white transition-colors duration-300">
       {/* Background Visual Effects */}
       <ScrollProgress />
       <CursorGlow />
       <ParticleBackground />
 
       {/* Main Navigation */}
-      <Navbar />
+      <Navbar onOpenResumeModal={() => setIsResumeModalOpen(true)} />
 
       {/* Main Content Sections */}
       <main className="relative z-10">
-        <Hero />
+        <Hero onOpenResumeModal={() => setIsResumeModalOpen(true)} />
         <About />
         <Experience />
         <Projects />
+        <ResumeSection onOpenModal={() => setIsResumeModalOpen(true)} />
         <Skills />
         <Certifications />
         <Education />
@@ -40,6 +45,12 @@ export default function App() {
       {/* Footer & Floating Controls */}
       <Footer />
       <ScrollToTop />
+
+      {/* Document Resume Viewer & Printable Modal */}
+      <ResumeModal
+        isOpen={isResumeModalOpen}
+        onClose={() => setIsResumeModalOpen(false)}
+      />
     </div>
   );
 }

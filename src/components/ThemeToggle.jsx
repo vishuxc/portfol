@@ -6,25 +6,37 @@ export default function ThemeToggle() {
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-      setIsDark(false);
-      document.documentElement.classList.remove('dark');
+    const saved = localStorage.getItem('portfolioTheme');
+    if (saved === 'light') {
+      applyLightMode();
     } else {
-      setIsDark(true);
-      document.documentElement.classList.add('dark');
+      applyDarkMode();
     }
   }, []);
 
+  const applyDarkMode = () => {
+    setIsDark(true);
+    localStorage.setItem('portfolioTheme', 'dark');
+    const root = document.documentElement;
+    root.setAttribute('data-theme', 'cyan');
+    root.classList.remove('light');
+    root.classList.add('dark');
+  };
+
+  const applyLightMode = () => {
+    setIsDark(false);
+    localStorage.setItem('portfolioTheme', 'light');
+    const root = document.documentElement;
+    root.setAttribute('data-theme', 'light');
+    root.classList.remove('dark');
+    root.classList.add('light');
+  };
+
   const toggleTheme = () => {
     if (isDark) {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      setIsDark(false);
+      applyLightMode();
     } else {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setIsDark(true);
+      applyDarkMode();
     }
   };
 
@@ -33,13 +45,20 @@ export default function ThemeToggle() {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={toggleTheme}
-      className="p-2 rounded-full glass-panel border border-slate-300 dark:border-slate-700/50 hover:border-blue-500/50 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
-      aria-label="Toggle Dark / Light Theme"
+      className="px-3.5 py-2 rounded-full glass-panel border border-cyan-500/30 hover:border-cyan-400 text-slate-200 hover:text-cyan-300 font-bold text-xs flex items-center gap-2 shadow-lg transition-all"
+      aria-label="Toggle Theme: Cyber Cyan Dark vs Light Glass"
+      title={isDark ? "Switch to Light Glass Mode" : "Switch to Cyber Cyan Dark"}
     >
       {isDark ? (
-        <Sun className="w-5 h-5 text-amber-500" />
+        <>
+          <Moon className="w-4 h-4 text-cyan-400" />
+          <span className="hidden sm:inline">Cyber Cyan Dark</span>
+        </>
       ) : (
-        <Moon className="w-5 h-5 text-blue-600" />
+        <>
+          <Sun className="w-4 h-4 text-amber-500" />
+          <span className="hidden sm:inline">Light Glass</span>
+        </>
       )}
     </motion.button>
   );

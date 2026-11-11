@@ -1,13 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { User, Code2, Cpu, Database, CheckCircle2 } from 'lucide-react';
+import { User, Code2, Cpu, Database, CheckCircle2, Sparkles, Layers } from 'lucide-react';
 import { aboutContent, personalDetails } from '../data/portfolioData';
+import avatar3D from '../assets/avatar_3d.jpg';
 
 const highlights = [
   {
     icon: Code2,
     title: "Full Stack Mastery",
-    desc: "Seamlessly bridging frontend React.js UIs with robust Node.js, Express & Laravel APIs."
+    desc: "Seamlessly bridging frontend React.js UIs with robust Node.js, Express & Laravel REST APIs."
   },
   {
     icon: Database,
@@ -23,8 +24,12 @@ const highlights = [
 
 export default function About() {
   return (
-    <section id="about" className="py-24 relative z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="about" className="py-24 relative z-10 bg-slate-950 text-white">
+      {/* Background Red Orbs */}
+      <div className="absolute top-1/3 left-0 w-80 h-80 bg-red-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-rose-500/10 rounded-full blur-[140px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
         <motion.div
@@ -34,14 +39,14 @@ export default function About() {
           transition={{ duration: 0.6 }}
           className="text-center space-y-3 mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-pill text-xs font-semibold text-blue-600 dark:text-blue-400 tracking-wide uppercase">
-            <User className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill text-xs font-bold text-red-300 border border-red-500/30">
+            <User className="w-4 h-4 text-red-400" />
             <span>Get To Know Me</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-heading">
             About <span className="gradient-text">Me</span>
           </h2>
-          <div className="w-16 h-1 bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-500 dark:to-cyan-400 mx-auto rounded-full" />
+          <div className="w-20 h-1 bg-gradient-to-r from-red-500 via-rose-500 to-amber-400 mx-auto rounded-full" />
         </motion.div>
 
         {/* Content Grid */}
@@ -53,22 +58,22 @@ export default function About() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="lg:col-span-7 glass-panel p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between"
+            className="lg:col-span-7 cyber-card p-8 sm:p-10 rounded-3xl border border-red-500/25 flex flex-col justify-between bg-slate-900/90 shadow-2xl"
           >
             <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                <span className="p-2 rounded-xl bg-blue-500/5 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+              <h3 className="text-2xl font-extrabold text-white flex items-center gap-3 font-heading">
+                <span className="p-2.5 rounded-2xl bg-red-500/10 text-red-400 border border-red-500/30">
                   <User className="w-5 h-5" />
                 </span>
                 Driven Software Engineer
               </h3>
 
-              <p className="text-slate-700 dark:text-slate-300 text-base sm:text-lg leading-relaxed">
+              <p className="text-slate-200 text-base sm:text-lg leading-relaxed font-normal">
                 {aboutContent.bio}
               </p>
 
               {/* Bulleted Core Attributes */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-6 border-t border-slate-800">
                 {[
                   "Scalable Web Architecture",
                   "RESTful API Development",
@@ -77,8 +82,8 @@ export default function About() {
                   "Database Optimization",
                   "Clean & Maintainable Code"
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-slate-700 dark:text-slate-300 text-sm font-medium">
-                    <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                  <div key={idx} className="flex items-center gap-2.5 text-slate-200 text-sm font-semibold">
+                    <CheckCircle2 className="w-4 h-4 text-red-400 flex-shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -86,13 +91,13 @@ export default function About() {
             </div>
 
             {/* Quick Metrics Banner */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 mt-8 border-t border-slate-200 dark:border-slate-800/80">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 mt-8 border-t border-slate-800/80">
               {personalDetails.stats.map((stat, idx) => (
                 <div key={idx} className="text-center sm:text-left">
-                  <div className="text-2xl sm:text-3xl font-extrabold gradient-text">
+                  <div className="text-2xl sm:text-3xl font-extrabold gradient-text font-heading">
                     {stat.value}
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">
+                  <div className="text-xs text-slate-300 font-medium mt-1">
                     {stat.label}
                   </div>
                 </div>
@@ -100,7 +105,7 @@ export default function About() {
             </div>
           </motion.div>
 
-          {/* Right Cards: Key Focus Areas */}
+          {/* Right Cards: Key Focus Areas + 3D Persona Card */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -108,22 +113,38 @@ export default function About() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:col-span-5 space-y-4 flex flex-col justify-between"
           >
+            {/* 3D Digital Persona Card */}
+            <div className="p-4 rounded-3xl bg-gradient-to-r from-red-950/40 via-slate-900/90 to-rose-950/40 border border-red-500/30 flex items-center gap-4 shadow-xl">
+              <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-red-500/60 shadow-lg shadow-red-500/20 shrink-0">
+                <img src={avatar3D} alt="Vishnuvarthan Raja 3D Stylized Avatar" className="w-full h-full object-cover" />
+                <span className="absolute bottom-1 right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-slate-950" />
+              </div>
+              <div className="space-y-0.5">
+                <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-red-300 uppercase tracking-wider font-heading">
+                  <Sparkles className="w-3 h-3 text-amber-300" />
+                  <span>3D Digital Persona</span>
+                </div>
+                <div className="text-sm font-bold text-white font-heading">Stylized 3D Character Model</div>
+                <p className="text-xs text-slate-300">Custom 3D identity with cinematographic studio lighting.</p>
+              </div>
+            </div>
+
             {highlights.map((card, idx) => {
               const IconComp = card.icon;
               return (
                 <div
                   key={idx}
-                  className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800/80 hover:border-blue-500/30 dark:hover:border-blue-500/40 transition-all duration-300 group hover:-translate-y-1"
+                  className="cyber-card p-6 sm:p-7 rounded-3xl border border-red-500/20 hover:border-red-400 transition-all duration-300 group hover:-translate-y-1 bg-slate-900/90 shadow-xl"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-2xl bg-blue-500/5 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300 flex-shrink-0">
+                    <div className="p-3 rounded-2xl bg-red-500/10 text-red-400 border border-red-500/30 group-hover:bg-red-600 group-hover:text-white transition-colors duration-300 flex-shrink-0">
                       <IconComp className="w-6 h-6" />
                     </div>
-                    <div>
-                      <h4 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    <div className="space-y-1">
+                      <h4 className="text-lg font-bold text-white group-hover:text-red-300 transition-colors font-heading">
                         {card.title}
                       </h4>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm mt-1 leading-relaxed">
+                      <p className="text-slate-300 text-sm leading-relaxed font-normal">
                         {card.desc}
                       </p>
                     </div>
